@@ -8,8 +8,6 @@ from bs4 import BeautifulSoup
 from src.llms import OPENAI
 from src.state import State
 
-url = "https://globo.com"
-
 options = ChromeOptions()
 options.add_argument("--headless")
 webdriver = Chrome(options=options)
@@ -19,7 +17,7 @@ def extract_text(state: State):
         webdriver.get(url)
         h = webdriver.page_source
         soup = BeautifulSoup(h, "html.parser")
-        webdriver.close()
+        webdriver.quit()
         return soup
 
     def clean_dom(dom):
@@ -34,6 +32,9 @@ def extract_text(state: State):
     def split_dom(dom, max_len:int):
         return [dom[i: i+max_len] for i in range(0, len(dom), max_len)]
 
+    url = state['url']
+    if not url:
+        raise ValueError("URL is required to extract text.")
     dom = get_dom(url)
     cleaned_dom = clean_dom(dom)
     splited_dom = split_dom(cleaned_dom, 2000)

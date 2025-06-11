@@ -1,16 +1,31 @@
 import sys
-sys.path.insert(0, r"C:\Users\202203369008\Documents\CompanyInformationSearch")
-from duckduckgo_search import DDGS
-from src.state import State
+import logging
 from time import sleep
 from tavily import TavilyClient
+from src.state import State
+
+# Set up logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 client = TavilyClient(api_key="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")
-# res = client.search("Qual o faturamento da Globo.com?")
-# print(res)
 
 def websearch(state: State):
     answers = []
     for query in state['queries']:
-        answers.append(client.search(query))
+        try:
+            logger.info(f"Searching query: {query}")
+            response = client.search(
+                query=query,
+                search_depth="advanced",
+                max_results=3
+            )
+            logger.info(f"Got response: {response}")
+            answers.append(response)
+            # Add a small delay between requests
+            sleep(1)
+        except Exception as e:
+            logger.error(f"Error searching for query '{query}': {str(e)}")
+            answers.append({"error": str(e)})
+    
     return {"search_answers": answers}

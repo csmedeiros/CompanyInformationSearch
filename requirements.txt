@@ -1,0 +1,10 @@
+langchain
+langchain-community
+langchain-core
+langchain-openai
+langgraph
+numpy
+pandas
+selenium
+beautifulsoup4
+tavily
