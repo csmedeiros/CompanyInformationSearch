@@ -1,6 +1,6 @@
 import azure.functions as func
 import json
-from graph import graph
+from src.graph import graph
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
     # Get request body for POST method
